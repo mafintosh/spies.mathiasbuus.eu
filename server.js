@@ -3,6 +3,8 @@ var http = require('http');
 var net = require('net');
 var ecstatic = require('ecstatic');
 
+var LOGO = require('fs').readFileSync('logo');
+
 var spies = [];
 var browsers = [];
 
@@ -23,7 +25,8 @@ var sock = shoe(function(stream) {
 });
 
 net.createServer(function(stream) {
-	stream.write('type help for a list of commands\n');
+	stream.write(LOGO);
+	stream.write(' type help for a list of commands\n\n');
 	addStream(spies, stream);
 	browsers.forEach(function(browser) {
 		stream.pipe(browser, {end:false}).pipe(stream);
