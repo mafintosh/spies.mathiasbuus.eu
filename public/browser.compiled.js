@@ -3447,7 +3447,9 @@ var CLEAR = '\u001b[H\u001b[2J';
 
 var noop = function() {};
 
-var Spy = function() {
+var Spy = function(options) {
+	options = options || {};
+
 	this.buffer = '';
 	this.once('pipe', function(stream) {
 		stream.on('error', noop); // ignore errors yo
@@ -3455,6 +3457,8 @@ var Spy = function() {
 		stream.setEncoding('utf-8');
 	});
 
+	this.tty = options.tty !== false;
+	this.prev = null;
 	this.readable = true;
 	this.writable = true;
 };
@@ -3472,7 +3476,9 @@ Spy.prototype.write = function(data) {
 			if (/^\d+$/.test(item)) return parseInt(item, 10);
 			return item;
 		});
+		message = message[0] === '-' ? self.prev : message;
 		self.emit.apply(self, message);
+		self.prev = message;
 	});
 };
 
@@ -3495,11 +3501,11 @@ Spy.prototype.finish = function(ended) {
 };
 
 Spy.prototype.log = function(value) {
-	this.emit('data', format(value));
+	this.emit('data', format(value, this.tty));
 };
 
-var spies = function() {
-	var sh = new Spy();
+var spies = function(options) {
+	var sh = new Spy(options);
 	var cmds = [];
 
 	sh.on('newListener', function(name) {
@@ -3524,7 +3530,7 @@ var spies = function() {
 	return sh;
 };
 
-spies.listen = function(port, onSpy) {
+spies.listen = function(port, onspy) {
 	if (typeof port === 'function') {
 		var server = spies.listen(10101, port);
 		server.once('error', function(err) {
@@ -3535,16 +3541,22 @@ spies.listen = function(port, onSpy) {
 	return require('net').createServer(function(socket) {
 		var spy = spies();
 		socket.pipe(spy).pipe(spies);
-		onSpy(spy);
+		onspy(spy);
 	});
 };
 
 module.exports = spies;
 });
 
-require.define("/node_modules/spies/format.js",function(require,module,exports,__dirname,__filename,process,global){var format = function(obj) {
+require.define("/node_modules/spies/format.js",function(require,module,exports,__dirname,__filename,process,global){var format = function(obj, tty) {
 	var res = [];
 
+	var color = function(col, str) {
+		if (!tty) return str;
+		if (col === 'blue') return '\x1B[36m'+str+'\x1B[39m';
+		if (col === 'gray') return '\x1B[90m'+str+'\x1B[39m';
+		return str;
+	};
 	var visit = function(prev, val) {
 		if (val === undefined || val === null) return res.push([prev, '(nil)']);
 		if (typeof val !== 'object') return res.push([prev, ''+val]);
@@ -3571,7 +3583,7 @@ require.define("/node_modules/spies/format.js",function(require,module,exports,_
 	var prev = [];
 	var max = res.reduce(function(sofar, line) {
 		return line[0].length > sofar.length ? line[0] : sofar;
-	}, '').replace(/./g, ' ')+' \x1B[90m:\x1B[39m ';
+	}, '').replace(/./g, ' ')+' '+color('gray',':')+' ';
 
 	return res.map(function(line) {
 		var prefix = line[0].split('.').map(function(l, i) {
@@ -3579,7 +3591,7 @@ require.define("/node_modules/spies/format.js",function(require,module,exports,_
 		}).join('.').replace(/ \. /g, '  ');
 		var suffix = max.slice(-(max.length-line[0].length));
 		prev = line[0].split('.');
-		return '\x1B[36m'+prefix+'\x1B[39m'+suffix+line[1]+'\n';
+		return color('blue', prefix)+suffix+line[1]+'\n';
 	}).join('');
 };
 
