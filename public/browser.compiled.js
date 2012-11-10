@@ -3592,12 +3592,12 @@ require.define("net",function(require,module,exports,__dirname,__filename,proces
 require.define("/public/browser.js",function(require,module,exports,__dirname,__filename,process,global){var shoe = require('shoe');
 var spies = require('spies');
 
-window.onload = function() {
+var connect = function() {
 	var stream = shoe('http://'+(location.hostname || 'localhost')+'/spy');
 	var spy = spies();
 
 	spy.on('whoami', function() {
-		spy.log('i am the browser');
+		spy.log(window.navigator.userAgent);
 	});
 	spy.on('fill', function(color) {
 		document.body.style.backgroundColor = color;
@@ -3627,9 +3627,19 @@ window.onload = function() {
 			height: window.outerHeight
 		});
 	});
-
+	spy.on('reload', function() {
+		location.reload(true);
+	});
 
 	stream.pipe(spy).pipe(stream);
+
+	stream.on('close', function() {
+		setTimeout(connect, 1000);
+	});
+};
+
+window.onload = function() {
+	connect();
 };
 });
 require("/public/browser.js");
