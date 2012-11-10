@@ -23,6 +23,7 @@ var sock = shoe(function(stream) {
 });
 
 net.createServer(function(stream) {
+	stream.write('type help for a list of commands\n');
 	addStream(spies, stream);
 	browsers.forEach(function(browser) {
 		stream.pipe(browser, {end:false}).pipe(stream);
