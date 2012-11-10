@@ -8,9 +8,13 @@ window.onload = function() {
 	spy.on('whoami', function() {
 		spy.log('i am the browser');
 	});
-	spy.on('full', function(color) {
+	spy.on('fill', function(color) {
 		document.body.style.backgroundColor = color;
 		spy.log('i am now '+color);
+	});
+	spy.on('title', function() {
+		document.title = Array.prototype.slice.call(arguments).join(' ');
+		spy.log('title is now '+document.title);
 	});
 	spy.on('text', function() {
 		var msg = Array.prototype.slice.call(arguments).join(' ');
