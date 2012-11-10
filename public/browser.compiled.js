@@ -391,10 +391,10 @@ process.binding = function (name) {
 
 });
 
-require.define("/snippets/browser-spy/node_modules/shoe/package.json",function(require,module,exports,__dirname,__filename,process,global){module.exports = {"main":"index.js","browserify":"browser.js"}
+require.define("/node_modules/shoe/package.json",function(require,module,exports,__dirname,__filename,process,global){module.exports = {"main":"index.js","browserify":"browser.js"}
 });
 
-require.define("/snippets/browser-spy/node_modules/shoe/browser.js",function(require,module,exports,__dirname,__filename,process,global){var Stream = require('stream');
+require.define("/node_modules/shoe/browser.js",function(require,module,exports,__dirname,__filename,process,global){var Stream = require('stream');
 var sockjs = require('sockjs-client');
 
 module.exports = function (uri, cb) {
@@ -1108,10 +1108,10 @@ exports.format = function(f) {
 
 });
 
-require.define("/snippets/browser-spy/node_modules/shoe/node_modules/sockjs-client/package.json",function(require,module,exports,__dirname,__filename,process,global){module.exports = {"main":"sockjs.js"}
+require.define("/node_modules/shoe/node_modules/sockjs-client/package.json",function(require,module,exports,__dirname,__filename,process,global){module.exports = {"main":"sockjs.js"}
 });
 
-require.define("/snippets/browser-spy/node_modules/shoe/node_modules/sockjs-client/sockjs.js",function(require,module,exports,__dirname,__filename,process,global){/* SockJS client, version 0.3.1.7.ga67f.dirty, http://sockjs.org, MIT License
+require.define("/node_modules/shoe/node_modules/sockjs-client/sockjs.js",function(require,module,exports,__dirname,__filename,process,global){/* SockJS client, version 0.3.1.7.ga67f.dirty, http://sockjs.org, MIT License
 
 Copyright (c) 2011-2012 VMware, Inc.
 
@@ -3590,7 +3590,7 @@ require.define("net",function(require,module,exports,__dirname,__filename,proces
 
 });
 
-require.define("/snippets/browser-spy/public/browser.js",function(require,module,exports,__dirname,__filename,process,global){var shoe = require('shoe');
+require.define("/public/browser.js",function(require,module,exports,__dirname,__filename,process,global){var shoe = require('shoe');
 var spies = require('spies');
 
 window.onload = function() {
@@ -3613,5 +3613,5 @@ window.onload = function() {
 	stream.pipe(spy).pipe(stream);
 };
 });
-require("/snippets/browser-spy/public/browser.js");
+require("/public/browser.js");
 })();
