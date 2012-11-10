@@ -3594,7 +3594,7 @@ require.define("/public/browser.js",function(require,module,exports,__dirname,__
 var spies = require('spies');
 
 window.onload = function() {
-	var stream = shoe('http://'+(location.hostname || 'localhost')+':10101/spy');
+	var stream = shoe('http://'+(location.hostname || 'localhost')+'/spy');
 	var spy = spies();
 
 	spy.on('where', function() {
