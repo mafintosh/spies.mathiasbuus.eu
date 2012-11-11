@@ -20,7 +20,7 @@ var server = http.createServer(ecstatic('public'));
 var sock = shoe(function(stream) {
 	addStream(browsers, stream);
 	spies.forEach(function(spy) {
-		spy.pipe(stream, {end:false}).pipe(spy);
+		spy.pipe(stream, {end:false}).pipe(spy, {end:false});
 	});
 });
 
@@ -29,7 +29,7 @@ net.createServer(function(stream) {
 	stream.write(' type help for a list of commands\n\n');
 	addStream(spies, stream);
 	browsers.forEach(function(browser) {
-		stream.pipe(browser, {end:false}).pipe(stream);
+		stream.pipe(browser, {end:false}).pipe(stream, {end:false});
 	});
 }).listen(10101);
 
