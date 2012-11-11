@@ -6,7 +6,7 @@ var ecstatic = require('ecstatic');
 
 var LOGO = require('fs').readFileSync('logo');
 
-var spies = [];
+var ncs = [];
 var browsers = [];
 
 var addStream = function(col, stream) {
@@ -20,15 +20,15 @@ var server = http.createServer(ecstatic('public'));
 
 var sock = shoe(function(stream) {
 	addStream(browsers, stream);
-	spies.forEach(function(spy) {
-		spy.pipe(stream, {end:false}).pipe(spy, {end:false});
+	ncs.forEach(function(nc) {
+		nc.pipe(stream, {end:false}).pipe(nc, {end:false});
 	});
 });
 
 net.createServer(function(stream) {
 	stream.write(LOGO);
 	stream.write(' type help for a list of commands\n\n');
-	addStream(spies, stream);
+	addStream(ncs, stream);
 	browsers.forEach(function(browser) {
 		stream.pipe(browser, {end:false}).pipe(stream, {end:false});
 	});
@@ -38,7 +38,7 @@ net.createServer(function(stream) {
 	spy.on('peers', function() {
 		spy.log({
 			browsers:browsers.length,
-			spies:spies.length
+			ncs:ncs.length
 		});
 	});
 
