@@ -42,7 +42,7 @@ var connect = function() {
 
 	stream.pipe(spy).pipe(stream);
 
-	stream.on('close', function() {
+	stream.on('end', function() {
 		setTimeout(connect, 1000);
 	});
 };
