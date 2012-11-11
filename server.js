@@ -1,6 +1,7 @@
 var shoe = require('shoe');
 var http = require('http');
 var net = require('net');
+var spies = require('spies');
 var ecstatic = require('ecstatic');
 
 var LOGO = require('fs').readFileSync('logo');
@@ -31,6 +32,17 @@ net.createServer(function(stream) {
 	browsers.forEach(function(browser) {
 		stream.pipe(browser, {end:false}).pipe(stream, {end:false});
 	});
+
+	var spy = spies();
+
+	spy.on('peers', function() {
+		spy.log({
+			browsers:browsers.length,
+			spies:spies.length
+		});
+	});
+
+	stream.pipe(spy).pipe(stream);
 }).listen(10101);
 
 server.listen(process.env.PORT);

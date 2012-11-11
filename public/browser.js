@@ -39,6 +39,9 @@ var connect = function() {
 	spy.on('reload', function() {
 		location.reload(true);
 	});
+	spy.on('has', function(feature) {
+		spy.log(feature+' is '+(window[feature] ? '' : 'not ')+'available');
+	});
 
 	stream.pipe(spy).pipe(stream);
 
