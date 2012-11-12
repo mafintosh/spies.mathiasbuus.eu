@@ -11,14 +11,14 @@ var browsers = [];
 
 var app = root();
 
-app.get('/*', function(request, response) {
-	request.pipe(filed(__dirname+'/public/'+request.params.glob)).pipe(response);
-});
 app.get('/peers', function(request, response) {
 	response.send({
 		browsers:browsers.length,
 		ncs:ncs.length
 	});
+});
+app.get('/*', function(request, response) {
+	request.pipe(filed(__dirname+'/public/'+request.params.glob)).pipe(response);
 });
 
 var addStream = function(col, stream) {
