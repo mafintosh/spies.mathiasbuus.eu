@@ -19,7 +19,7 @@ var addStream = function(col, stream) {
 var app = root();
 
 app.get('/*', function(request, response) {
-	request.pipe(filed(__dirname+'/'+request.params.glob)).pipe(response);
+	request.pipe(filed(__dirname+'/public/'+request.params.glob)).pipe(response);
 });
 
 var sock = shoe(function(stream) {
