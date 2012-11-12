@@ -9,18 +9,24 @@ var LOGO = require('fs').readFileSync('logo');
 var ncs = [];
 var browsers = [];
 
+var app = root();
+
+app.get('/*', function(request, response) {
+	request.pipe(filed(__dirname+'/public/'+request.params.glob)).pipe(response);
+});
+app.get('/peers', function(request, response) {
+	response.send({
+		browsers:browsers.length,
+		ncs:ncs.length
+	});
+});
+
 var addStream = function(col, stream) {
 	col.push(stream);
 	stream.on('close', function() {
 		col.splice(col.indexOf(stream), 1);
 	});
 };
-
-var app = root();
-
-app.get('/*', function(request, response) {
-	request.pipe(filed(__dirname+'/public/'+request.params.glob)).pipe(response);
-});
 
 var sock = shoe(function(stream) {
 	addStream(browsers, stream);
