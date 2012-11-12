@@ -1,8 +1,8 @@
 var shoe = require('shoe');
-var http = require('http');
+var root = require('root');
 var net = require('net');
 var spies = require('spies');
-var ecstatic = require('ecstatic');
+var filed = require('filed');
 
 var LOGO = require('fs').readFileSync('logo');
 
@@ -16,7 +16,11 @@ var addStream = function(col, stream) {
 	});
 };
 
-var server = http.createServer(ecstatic('public'));
+var app = root();
+
+app.get('/*', function(request, response) {
+	request.pipe(filed(__dirname+'/'+request.params.glob)).pipe(response);
+});
 
 var sock = shoe(function(stream) {
 	addStream(browsers, stream);
@@ -45,5 +49,5 @@ net.createServer(function(stream) {
 	stream.pipe(spy).pipe(stream);
 }).listen(10101);
 
-server.listen(process.env.PORT);
-sock.install(server, '/spy');
+sock.install(app, '/spy');
+app.listen(process.env.PORT);
